@@ -1,6 +1,6 @@
 # Curso_Programacion_Arduino_2021
-#Practica 1
-{
+
+
 volatile int interruptCounter;
 const int potPin=34;
 const int PWMpin=32;
@@ -48,4 +48,4 @@ timerAlarmEnable(timer);
  
   }
 }
-}
+
