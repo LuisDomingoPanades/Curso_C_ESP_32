@@ -1,0 +1,31 @@
+const int potPin=34;
+const int PWMpin=32;
+const int freq=5000;
+const int ledChannel=0;
+const int resolution=12;
+int potValue=0;
+float Voltage=0;
+
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(115200);
+ledcSetup(ledChannel,freq,resolution);
+ledcAttachPin(PWMpin, ledChannel);
+
+}
+
+
+  void loop() {
+    potValue=analogRead(potPin);
+    ledcWrite(ledChannel,potValue);
+ 
+    
+    
+    Serial.println(potValue);
+    Voltage=potValue*3.3/4095;
+    Serial.print("El voltaje es: ");
+    Serial.println(Voltage);
+ 
+  }
+}
+
