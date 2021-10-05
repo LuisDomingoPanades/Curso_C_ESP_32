@@ -3,8 +3,8 @@ const int potPin=34;
 const int freq=5000;
 const int ledChannel=0;
 const int resolution=8;
-int potValue;
 float Voltage;
+int potValue;
 int duty;
 int seg=0;
 int dutyPWM;
@@ -27,34 +27,35 @@ void loop() {
     }
     else if(command.startsWith("ADC("))
     {
-      int length=strlen(command);
-      command.remove(length-1);
+      int longitud=command.length();
+      command.remove(longitud-1);
       command.remove(0,4);
       seg=command.toInt();
       Serial.println(potValue); // send action to Serial Monitor
       
     }
     else
-    if(command== "PWM(x)")
+    if(command.startsWith("PWM("))
     {
-     int length=strlen(command);
-      command.remove(length-1);
+     int longitud=command.length();
+      command.remove(longitud-1);
       command.remove(0,4); 
       duty=command.toInt();
-      dutyPWM=(duty*255)/9
+      dutyPWM=(duty*255)/9;
     }
   }
   if (seg>0) 
   {
   potValue=analogRead(potPin);
   Voltage=potValue*3.3/4095;
-  serial.println(potValue);
-  serial.println(Voltage);
+  Serial.println(potValue);
+  Serial.println(Voltage);
   delay(seg*1000);
   }
   if (duty>0) 
   {
-  ledcWrite(ledChannel,DutyPWM)
+
+  ledcWrite(ledChannel,dutyPWM);
   
   }
 }
