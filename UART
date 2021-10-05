@@ -3,6 +3,7 @@ const int potPin=34;
 const int freq=5000;
 const int ledChannel=0;
 const int resolution=8;
+int potValue;
 float Voltage;
 int duty;
 int seg=0;
