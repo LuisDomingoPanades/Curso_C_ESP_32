@@ -2,6 +2,11 @@
 
 
 MPU9250 mpu;
+const int PWMpin=32;
+const int freq=5000;
+const int ledChannel=0;
+const int resolution=12;
+int led;
 float prevmillis=0;
 float prevmillis_1=0;
 float AccX;
@@ -11,7 +16,8 @@ void setup() {
     Serial.begin(115200);
     Wire.begin();
     delay(2000);
-    
+    ledcSetup(ledChannel,freq,resolution);
+    ledcAttachPin(PWMpin, ledChannel);
     
 
     if (!mpu.setup(0x68)) {  // change to your own address
@@ -33,6 +39,10 @@ void loop() {
         prevmillis_1=millis();
         print_acc();
     }
+    if ((led==1) and (millis()>prevmillis_1+200)){
+    led=0;
+    ledcWrite(ledChannel,0);
+    }
 }
 void muestrea() {
         prevmillis=millis();
@@ -47,4 +57,7 @@ void print_acc() {
     Serial.print(AccY, 2);
     Serial.print(", ");
     Serial.println(AccZ, 2);
+    ledcWrite(ledChannel,2045);
+    led=1;
+    
 }
