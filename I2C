@@ -1,12 +1,18 @@
 #include <MPU9250.h>
 
-#include <Wire.h>
+
 MPU9250 mpu;
+float prevmillis=0;
+float prevmillis_1=0;
+float AccX;
+float AccY;
+float AccZ;
 void setup() {
     Serial.begin(115200);
     Wire.begin();
     delay(2000);
-    enum class ACCEL_DLPF_CFG : uint8_t {DLPF_5HZ};
+    
+    
 
     if (!mpu.setup(0x68)) {  // change to your own address
         while (1) {
@@ -16,23 +22,29 @@ void setup() {
     }
 }
 
+
 void loop() {
-    if (mpu.update()) {
-        static uint32_t prev_ms = millis();
-        if (millis() > prev_ms + 1000) {
-            print_acc();
-            prev_ms = millis();
-            
-            
+    if (mpu.update()){
+        if (100<(millis()-prevmillis)) {
+            muestrea();
         }
+      }
+    if (1000<(millis()-prevmillis_1)) {
+        prevmillis_1=millis();
+        print_acc();
     }
 }
-
+void muestrea() {
+        prevmillis=millis();
+        AccX=mpu.getAccX();
+        AccY=mpu.getAccY();
+        AccZ=mpu.getAccZ();
+}
 void print_acc() {
     Serial.print("Acceleration X,Y,Z ");
-    Serial.print(mpu.getAccX(), 2);
+    Serial.print(AccX, 2);
     Serial.print(", ");
-    Serial.print(mpu.getAccY(), 2);
+    Serial.print(AccY, 2);
     Serial.print(", ");
-    Serial.println(mpu.getAccZ(), 2);
+    Serial.println(AccZ, 2);
 }
