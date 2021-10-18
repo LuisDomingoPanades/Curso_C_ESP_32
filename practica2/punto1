@@ -1,0 +1,42 @@
+#include <Arduino.h>
+const int ledPin=32
+void setup() {
+  pinMode(ledPin,OUTPUT);
+  Serial.begin(112500);
+  delay(1000);
+
+  xTaskCreate(Tarea1,"Tarea1",10000,NULL,1,NULL);
+  xTaskCreate(Tarea2,"Tarea2",10000,NULL,1,NULL);
+
+}
+
+void loop() {
+  
+}
+
+void Tarea1( void * parameter )
+{
+const TickType_t xDelay1= 200/ portTICK_PERIOD_MS;
+    while(1){
+
+        Serial.println("Hola mundo");
+        vTaskDelay(xDelay2);
+    }
+
+    Serial.println("Finalizando tarea 1");
+    
+}
+
+void Tarea2( void * parameter)
+{
+ const TickType_t xDelay2 200/ portTICK_PERIOD_MS;
+    while(1){
+
+        digitalWrite(ledPin,HIGH);
+        vTaskDelay(xDelay2);
+        digitalWrite(ledPin,LOW);
+        vTaskDelay(xDelay2);
+    }
+
+   
+}
