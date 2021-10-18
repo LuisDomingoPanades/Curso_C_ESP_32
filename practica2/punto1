@@ -1,5 +1,5 @@
 #include <Arduino.h>
-const int ledPin=32
+const int ledPin=32;
 void setup() {
   pinMode(ledPin,OUTPUT);
   Serial.begin(112500);
@@ -16,11 +16,11 @@ void loop() {
 
 void Tarea1( void * parameter )
 {
-const TickType_t xDelay1= 200/ portTICK_PERIOD_MS;
+const TickType_t xDelay1= 1000/ portTICK_PERIOD_MS;
     while(1){
 
         Serial.println("Hola mundo");
-        vTaskDelay(xDelay2);
+        vTaskDelay(xDelay1);
     }
 
     Serial.println("Finalizando tarea 1");
@@ -29,7 +29,7 @@ const TickType_t xDelay1= 200/ portTICK_PERIOD_MS;
 
 void Tarea2( void * parameter)
 {
- const TickType_t xDelay2 200/ portTICK_PERIOD_MS;
+ const TickType_t xDelay2= 200/ portTICK_PERIOD_MS;
     while(1){
 
         digitalWrite(ledPin,HIGH);
