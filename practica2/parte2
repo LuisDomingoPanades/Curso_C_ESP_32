@@ -1,0 +1,88 @@
+#include <MPU9250.h>
+
+
+MPU9250 mpu;
+const int Ledpin=32;
+
+float AccX;
+float AccY;
+float AccZ;
+void setup() {
+    Serial.begin(115200);
+    Wire.begin();
+    delay(2000);
+    pinMode(Ledpin,OUTPUT);
+    
+
+    if (!mpu.setup(0x68)) {  // change to your own address
+        while (1) {
+            Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
+            delay(5000);
+        }
+    }
+}
+xTaskCreate(Tarea1,"Tarea1",10000,NULL,1,NULL);
+  xTaskCreate(Tarea2,"Tarea2",10000,NULL,2,NULL);
+
+void loop() {
+    if (mpu.update()){
+        if (100<(millis()-prevmillis)) {
+            muestrea();
+        }
+      }
+    if (1000<(millis()-prevmillis_1)) {
+        prevmillis_1=millis();
+        print_acc();
+    }
+    if ((led==1) and (millis()>prevmillis_1+200)){
+    led=0;
+    digitalWrite(Ledpin,LOW);
+    }
+}
+void Tarea1 (void*parameter)
+{
+const TickType_t xDelay1= 100/ portTICK_PERIOD_MS;
+    while(1){
+        if (mpu.update())
+        {
+         muestrea();
+         }
+        
+        vTaskDelay(xDelay1);
+}
+void Tarea2(void*parameter)
+{
+const TickType_t xDelay2= 1000/ portTICK_PERIOD_MS;
+  while(1)
+  {
+  print_acc();
+  xTaskCreate(Tarea3,"Tarea1",10000,NULL,2,NULL);
+  vTaskDelay(xDelay2);
+  }
+}
+void Tarea3(void*parameter)
+{
+const TickType_t xDelay3= 200/ portTICK_PERIOD_MS;
+digitalWrite(Ledpin,HIGH);
+vTaskDelay(xDelay3);
+digitalWrite(Ledpin,LOW);
+vTaskDelete(NULL);
+}
+void muestrea() {
+        
+        AccX=mpu.getAccX();
+        AccY=mpu.getAccY();
+        AccZ=mpu.getAccZ();
+}
+
+void print_acc() {
+    Serial.print("Acceleration X,Y,Z ");
+    Serial.print(AccX, 2);
+    Serial.print(", ");
+    Serial.print(AccY, 2);
+    Serial.print(", ");
+    Serial.println(AccZ, 2);
+    ledcWrite(ledChannel,HIGH);
+    led=1;
+    
+}
