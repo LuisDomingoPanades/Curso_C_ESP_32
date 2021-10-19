@@ -82,7 +82,5 @@ void print_acc() {
     Serial.print(AccY, 2);
     Serial.print(", ");
     Serial.println(AccZ, 2);
-    ledcWrite(ledChannel,HIGH);
-    led=1;
     
 }
