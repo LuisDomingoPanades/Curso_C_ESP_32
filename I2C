@@ -9,9 +9,9 @@ const int Ledpin=32;
 int led;
 float prevmillis=0;
 float prevmillis_1=0;
-float AccX;
-float AccY;
-float AccZ;
+float AccX[];
+float AccY[];
+float AccZ[];
 void setup() {
     Serial.begin(115200);
     Wire.begin();
@@ -44,19 +44,22 @@ void loop() {
     }
 }
 void muestrea() {
+        i=i+1;
         prevmillis=millis();
-        AccX=mpu.getAccX();
-        AccY=mpu.getAccY();
-        AccZ=mpu.getAccZ();
+        AccX[i]=mpu.getAccX();
+        AccY[i]=mpu.getAccY();
+        AccZ[i]=mpu.getAccZ();
 }
 void print_acc() {
+    for (j=0;j<=9;j++){
     Serial.print("Acceleration X,Y,Z ");
-    Serial.print(AccX, 2);
+    Serial.print(AccX(j), 2);
     Serial.print(", ");
-    Serial.print(AccY, 2);
+    Serial.print(AccY(j), 2);
     Serial.print(", ");
-    Serial.println(AccZ, 2);
+    Serial.println(AccZ(j), 2);
     ledcWrite(ledChannel,HIGH);
     led=1;
-    
+    }
+    i=0;
 }
