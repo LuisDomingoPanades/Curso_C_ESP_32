@@ -1,9 +1,10 @@
 #include <MPU9250.h>
-
+#include <Arduino.h>
 
 MPU9250 mpu;
 const int Ledpin=32;
-
+int i;
+int j;
 float AccX[10];
 float AccY[10];
 float AccZ[10];
@@ -20,12 +21,12 @@ void setup() {
             delay(5000);
         }
     }
-}
-xTaskCreate(Tarea1,"Tarea1",10000,NULL,1,NULL);
-  xTaskCreate(Tarea2,"Tarea2",10000,NULL,2,NULL);
 
+xTaskCreate(Tarea1,"Tarea1",10000,NULL,1,NULL);
+xTaskCreate(Tarea2,"Tarea2",10000,NULL,2,NULL);
+}
 void loop() {
-    
+    delay(1000);
 }
 void Tarea1 (void*parameter)
 {
@@ -38,13 +39,14 @@ const TickType_t xDelay1= 100/ portTICK_PERIOD_MS;
         
         vTaskDelay(xDelay1);
 }
+}
 void Tarea2(void*parameter)
 {
 const TickType_t xDelay2= 1000/ portTICK_PERIOD_MS;
   while(1)
   {
   print_acc();
-  xTaskCreate(Tarea3,"Tarea1",10000,NULL,2,NULL);
+  xTaskCreate(Tarea3,"Tarea3",10000,NULL,2,NULL);
   vTaskDelay(xDelay2);
   }
 }
@@ -58,7 +60,7 @@ vTaskDelete(NULL);
 }
 void muestrea() {
         
-        prevmillis=millis();
+        
         AccX[i]=mpu.getAccX();
         AccY[i]=mpu.getAccY();
         AccZ[i]=mpu.getAccZ();
