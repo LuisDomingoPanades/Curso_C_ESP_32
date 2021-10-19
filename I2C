@@ -11,9 +11,9 @@ int i;
 int j;
 float prevmillis=0;
 float prevmillis_1=0;
-float AccX[9];
-float AccY[9];
-float AccZ[9];
+float AccX[10];
+float AccY[10];
+float AccZ[10];
 void setup() {
     Serial.begin(115200);
     Wire.begin();
@@ -39,6 +39,7 @@ void loop() {
     if (1000<(millis()-prevmillis_1)) {
         prevmillis_1=millis();
         print_acc();
+        i=0;
     }
     if ((led==1) and (millis()>prevmillis_1+200)){
     led=0;
@@ -61,8 +62,9 @@ void print_acc() {
     Serial.print(AccY[j], 2);
     Serial.print(", ");
     Serial.println(AccZ[j], 2);
+    
+    }
     digitalWrite(Ledpin,HIGH);
     led=1;
-    }
-    i=0;
+
 }
