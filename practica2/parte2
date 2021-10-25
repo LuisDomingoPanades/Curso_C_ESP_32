@@ -68,12 +68,13 @@ void muestrea() {
 
 void print_acc() {
     for (j=0;j<=9;j++){
-    Serial.print("Acceleration X,Y,Z ");
-    Serial.print(AccX[j], 2);
+ 
+    Serial.print(AccX[j]);
     Serial.print(", ");
-    Serial.print(AccY[j], 2);
+    Serial.print(AccY[j]);
     Serial.print(", ");
-    Serial.println(AccZ[j], 2);
+    Serial.print(AccZ[j]);
+    Serial.println(", ");
     
     }
    i=0; 
