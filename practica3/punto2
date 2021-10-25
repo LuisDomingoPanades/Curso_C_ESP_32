@@ -1,0 +1,25 @@
+import serial
+import csv
+import time
+puerto="COM4"
+baudio=115200
+esp32=serial.Serial(puerto, baudio)
+time.sleep(2)
+archivo="datos.txt"
+header=['Acc','X','Y','Z']
+# with open(archivo) as csv_file:
+#     csvwriter=csv.writer(csv_file)
+#     csvwriter.writerow(header)for i:1,2 
+cont=0
+while cont<10 :
+    salida=esp32.readline()
+    cont=cont+1
+    time.sleep(0.4)
+
+while True:
+    salida= str(esp32.readline())  
+    
+    salida=salida.replace(",",";")
+    print (salida)
+    # a,b,c=salida.split(";")
+        # csvwrite.writerows(salida)
