@@ -1,0 +1,12 @@
+import serial
+import time
+puerto="COM4"
+baudio=115200
+esp32=serial.Serial(puerto, baudio)
+time.sleep(2)
+
+while True:
+    salida= str(esp32.readline())  
+    
+    
+    print (salida)
