@@ -1,5 +1,4 @@
 #include <MPU9250.h>
-#include <Arduino.h>
 
 MPU9250 mpu;
 const int Ledpin=32;
