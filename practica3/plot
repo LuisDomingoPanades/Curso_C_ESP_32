@@ -1,0 +1,55 @@
+import serial
+import csv
+import time
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib import style
+a=0
+AccX=[]
+AccY=[]
+AccZ=[]
+x=[]
+puerto="COM3"
+baudio=115200
+esp32=serial.Serial(puerto, baudio)
+time.sleep(2)
+archivo="datos.txt"
+header=['Acc','X','Y','Z']
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+#def animate(a,AccX,AccY,AccZ):
+    
+with open(archivo,'x') as csv_file:
+    csvwriter=csv.writer(csv_file)
+    csvwriter.writerow(header)
+    print()
+    while a<50:
+        salida= str(esp32.readline())  
+        
+        salida=salida.replace(",",";")
+        #print (salida)
+        salida=salida.replace("b'",'')
+        #salida=salida.replace("r","")
+        salida1=salida.split("; ")
+        AccX.append(salida1[0])
+        AccY.append(salida1[1])
+        AccZ.append(salida1[2])
+        x.append(a)
+        ax.plot(x,AccX)
+        ax.plot(x,AccY)
+        ax.plot(x,AccZ)
+        
+       
+        
+        #print(salida1[0],salida1[1],salida1[2])
+        #animate
+        csvwriter.writerow([float(salida1[0]),float(salida1[1]),float(salida1[2])])
+   
+        a=a+1
+#ani=animation.FuncAnimation(fig,animate,fargs=(AccX,AccY,AccZ),interval=100)  
+ 
+#plt.ax 
+plt.plot(range(-0.6,17))        
+plt.show
+
+esp32.close()
