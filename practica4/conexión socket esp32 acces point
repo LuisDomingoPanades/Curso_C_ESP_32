@@ -1,0 +1,36 @@
+#include <WiFi.h>
+const char* ssid="ESP32-Access-Point" ;
+const char* password="1234";
+
+WiFiServer server(1500);
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(115200);
+
+Serial.println("Esperando conexión");
+WiFi.softAP(ssid,password);
+IPAddress IP=WiFi.softAPIP();
+Serial.print("IP address");
+Serial.println(IP);
+server.begin();
+}
+
+void loop() {
+  WiFiClient client=server.available();
+  if (client){
+      Serial.print("New Client");
+      while(client.connected()){
+        if (client.available()){
+          char c=client.read();
+          Serial.write(c);
+          }
+        }
+    client.stop();
+    Serial.println("Client disconnected.");
+    Serial.println("");
+    
+    }
+    
+  // put your main code here, to run repeatedly:
+
+}
