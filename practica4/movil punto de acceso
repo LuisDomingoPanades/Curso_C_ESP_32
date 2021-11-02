@@ -1,0 +1,48 @@
+#include <WiFi.h>
+const char* ssid="Mi 9T" ;
+const char* password="df82a2ce66ab";
+
+uint16_t serverPort=1500;
+const IPAddress serverIP(0,0,0,0);
+WiFiClient client;
+
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(115200);
+
+Serial.println("Esperando conexión");
+WiFi.mode(WIFI_STA);
+WiFi.begin(ssid,password);
+Serial.print("IP address");
+Serial.println(WiFi.localIP());
+
+
+}
+
+void loop() {
+  Serial.println("Intenta acceder al servidor");
+    if (client.connect(serverIP, serverPort)) // Intenta acceder a la dirección de destino
+    {
+        Serial.println("Visita exitosa");
+
+        client.print("Hello world!");                    // Enviar datos al servidor
+        while (client.connected() || client.available()) // Si está conectado o se han recibido datos no leídos
+        {
+            if (client.available()) // Si hay datos para leer
+            {
+                String line = client.readStringUntil('\n'); // Leer datos a nueva línea
+                Serial.print("Leer datos:");
+                Serial.println(line);
+                client.write(line.c_str()); // Devuelve los datos recibidos
+            }
+        }
+        Serial.println("Cerrar la conexión actual");
+        client.stop(); // Cerrar el cliente
+    }
+    else
+    {
+        Serial.println("Acceso fallido");
+        client.stop(); // Cerrar el cliente
+    }
+    delay(5000);
+    
