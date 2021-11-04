@@ -1,9 +1,9 @@
 #include <WiFi.h>
-const char* ssid="Mi 9T" ;
-const char* password="df82a2ce66ab";
+const char* ssid="MOVISTAR_10C4" ;
+const char* password="32472A6EC6114FF1D71C";
 
-uint16_t serverPort=1500;
-const IPAddress serverIP(0,0,0,0);
+uint16_t serverPort=8000;
+const char* serverIP="192.168.1.176";
 WiFiClient client;
 
 void setup() {
@@ -45,4 +45,4 @@ void loop() {
         client.stop(); // Cerrar el cliente
     }
     delay(5000);
-    
+}
