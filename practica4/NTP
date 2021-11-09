@@ -1,8 +1,12 @@
 #include <WiFi.h>
 #include "time.h"
 
+
 const char* ssid       = "RSense";
 const char* password   = "";
+uint16_t serverPort= 8000;
+const char* serverIP="192.168.0.140";
+WiFiClient client;
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;
@@ -42,6 +46,38 @@ void setup()
 
 void loop()
 {
-  delay(1000);
-  printLocalTime();
+  Serial.println("Intenta acceder al servidor");
+    if (client.connect(serverIP, serverPort)) // Intenta acceder a la dirección de destino
+    {
+        Serial.println("Visita exitosa");
+
+        client.print("Hello world!");                    // Enviar datos al servidor
+        while (client.connected() || client.available()) // Si está conectado o se han recibido datos no leídos
+        {
+            if (client.available()) // Si hay datos para leer
+            {
+                String line = client.readStringUntil('\n');
+                if (line=="start")
+                {
+                  while(1)
+                  {
+                    printLocalTime();
+                    delay(1000);
+                    String line = client.readStringUntil('\n');
+                    if (line=="stop");
+                    {  
+                      break;
+                    }  
+                  }
+                 }
+  
+            }
+        }
+        client.stop();
+    }
+    else
+    {
+      client.stop();
+      }
+    delay(5000);
 }
