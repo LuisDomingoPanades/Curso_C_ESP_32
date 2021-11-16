@@ -1,0 +1,64 @@
+
+#include <ArduinoJson.h>
+#include <WiFi.h>
+#include <WiFiClient.h> 
+#include <ESP32_FTPClient.h>
+#define WIFI_SSID "RSense"
+
+char temperaturas[1000];
+DynamicJsonDocument doc(1024);
+char ftp_server[] = "155.210.150.77";
+char ftp_user[]   = "rsense";
+char ftp_pass[]   = "rsense";
+
+int i=0;
+int Temp;
+
+
+ESP32_FTPClient ftp (ftp_server,ftp_user,ftp_pass);
+void setup(){
+  Serial.begin(115200);
+  WiFi.begin( WIFI_SSID);
+  
+  Serial.println("Connecting Wifi...");
+  while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+   
+  
+
+  
+  doc["sensor"] = "temp";
+  doc["time"]   = 1351824120;
+  JsonArray nested= doc.createNestedArray("data");
+  while (i<10) {
+    Temp=(random(0,40));
+    nested.add(Temp);
+    delay(500);
+    i=i+1;
+  }
+
+
+
+
+serializeJsonPretty(doc,temperaturas);
+ftp.OpenConnection();
+   
+
+   ftp.ChangeWorkDir("/rsense/prueba/Prueba archivo");
+   ftp.InitFile("Type A");
+   ftp.NewFile("temp.json");
+   ftp.Write(temperaturas);
+   ftp.CloseFile();
+}
+
+void loop(){
+
+
+  }
+
+
