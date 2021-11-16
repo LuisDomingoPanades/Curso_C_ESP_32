@@ -1,0 +1,33 @@
+#include <octocat.h>
+#include <ArduinoJson.h>
+#include <WiFi.h>
+#include <WiFiClient.h> 
+#include <ESP32_FTPClient.h>
+
+DynamicJsonDocument doc(1024);
+
+int i=0;
+int Temp;
+void setup(){
+  Serial.begin(9600);
+  doc["sensor"] = "temp";
+  doc["time"]   = 1351824120;
+  JsonArray nested= doc.createNestedArray("data");
+  while (i<10) {
+    Temp=(random(0,40));
+    nested.add(Temp);
+    delay(500);
+    i=i+1;
+  }
+
+
+
+
+serializeJsonPretty(doc,Serial);
+}
+
+void loop(){
+
+
+  }
+
