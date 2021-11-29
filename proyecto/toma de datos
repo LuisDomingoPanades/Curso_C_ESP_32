@@ -1,0 +1,220 @@
+#include <WiFi.h>
+#include "FS.h"
+#include "SD.h"
+#include "SPI.h"
+#include <MPU9250.h>
+#define SCK  17
+#define MISO  19
+#define MOSI  23
+#define CS  5
+MPU9250 mpu;
+const char* ssid="ESP32-Access-Point" ;
+const char* password="1234";
+int i =0;
+int k=0;
+int j=0;
+float AccX[10];
+float AccY[10];
+float AccZ[10];
+WiFiServer server(1500);
+void readFile(fs::FS &fs, const char * path){
+    Serial.printf("Reading file: %s\n", path);
+
+    File file = fs.open(path);
+    if(!file){
+        Serial.println("Failed to open file for reading");
+        return;
+    }
+
+    Serial.print("Read from file: ");
+    while(file.available()){
+        Serial.write(file.read());
+    }
+    file.close();
+}
+ void muestrea() {
+        
+        
+        AccX[k]=mpu.getAccX();
+        AccY[k]=mpu.getAccY();
+        AccZ[k]=mpu.getAccZ();
+        k=k+1;
+}
+ 
+
+void Tarea1 (void*parameter){
+  const TickType_t xDelay1= 100/ portTICK_PERIOD_MS;
+  while(1){
+     while(1){
+        if (mpu.update())
+        {
+         muestrea();
+         }
+        
+        vTaskDelay(xDelay1);
+   
+    }
+  }
+}
+ void Tarea2 (void*parameter){
+  const TickType_t xDelay2= 1000/ portTICK_PERIOD_MS;
+ 
+  while(1){
+    if (i==1){
+      File file=SD.open("/subida.txt",FILE_WRITE);
+       file.seek(EOF);
+       Serial.print(AccX[1]);
+      for (j=0;j<=9;j++){
+     
+      file.print(AccX[j]);
+      file.print(", ");
+      file.print(AccY[j]);
+      file.print(", ");
+      file.print(AccZ[j]);
+      file.println(", ");
+      
+      }
+      k=0;
+     
+      file.close();
+      vTaskDelay(xDelay2);
+      }
+     if (i==3) {
+      File file=SD.open("/bajada.txt",FILE_WRITE);
+      //file.print(AccX[j]);
+      file.seek(EOF);
+      for (j=0;j<=9;j++){
+ 
+      file.print(AccX[j]);
+      file.print(", ");
+      file.print(AccY[j]);
+      file.print(", ");
+      file.print(AccZ[j]);
+      file.println(", ");
+      
+      }
+      k=0;
+      file.close();
+       vTaskDelay(xDelay2);
+      }
+      if (i==5) {
+      File file=SD.open("/correr.txt",FILE_WRITE);
+      file.seek(EOF);
+      for (j=0;j<=9;j++){
+ 
+      file.print(AccX[j]);
+      file.print(", ");
+      file.print(AccY[j]);
+      file.print(", ");
+      file.print(AccZ[j]);
+      file.println(", ");
+      
+      }
+      k=0;
+      file.close();
+       vTaskDelay(xDelay2);
+      }
+       if (i==7) {
+      File file=SD.open("/andar.txt",FILE_WRITE);
+      file.seek(EOF);
+      for (j=0;j<=9;j++){
+ 
+      file.print(AccX[j]);
+      file.print(", ");
+      file.print(AccY[j]);
+      file.print(", ");
+      file.print(AccZ[j]);
+      file.println(", ");
+      
+      }
+      k=0;
+      file.close();
+       vTaskDelay(xDelay2);
+      }
+    
+     if ((i==2) or (i==4) or (i==6) or (i==8)){
+            vTaskDelete(NULL);
+            
+            }
+    
+    }
+  }
+
+//void  print_acc(file) {
+//    for (j=0;j<=9;j++){
+// 
+//    file.print(AccX[j]);
+//    file.print(", ");
+//    file.print(AccY[j]);
+//    file.print(", ");
+//    file.print(AccZ[j]);
+//    file.println(", ");
+//    k=0;
+//    }
+
+
+//void appendFile(fs::FS &fs, const char * path){
+//    
+//    File file = fs.open(path, FILE_APPEND);
+//    
+//}
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(115200);
+Wire.begin();
+if (!mpu.setup(0x68)) {  // change to your own address
+        while (1) {
+            Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
+            delay(5000);
+        }
+Serial.println("Esperando conexión");
+WiFi.softAP(ssid,password);
+IPAddress IP=WiFi.softAPIP();
+Serial.print("IP address");
+Serial.println(IP);
+server.begin();
+SPIClass spi = SPIClass(VSPI);
+spi.begin(SCK, MISO, MOSI, CS);
+xTaskCreate(Tarea1,"Tarea1",10000,NULL,1,NULL);
+}
+
+void loop() {
+  WiFiClient client=server.available();
+  if (client){
+      Serial.print("New Client");
+      while(client.connected()){
+        if (client.available()){
+          
+          String c=client.readStringUntil('\n');
+          i=i+1;
+          
+          
+          Serial.print(i);
+          client.print(i);
+          if ((i==1) or (i==3) or (i==5) or (i==7)){
+            xTaskCreate(Tarea2,"Tarea2",10000,NULL,2,NULL);
+            
+            }
+          
+           if (i==9){
+            readFile(SD,"/correr.txt");
+            }
+            
+          }
+          
+          
+          }
+        }
+    client.stop();
+    Serial.println("Client disconnected.");
+    Serial.println("");
+    
+    }
+    
+  // put your main code here, to run repeatedly:
+
+
+
+
+
+ 
