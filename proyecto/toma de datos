@@ -10,9 +10,11 @@ const char* password="1234";
 int i =0;
 int k=0;
 int j=0;
-float AccX[10]={1,2,3,4,5,6,7,8,9,10};
-float AccY[10]={1,2,3,4,5,6,7,8,9,10};
-float AccZ[10]={1,2,3,4,5,6,7,8,9,10};
+int prevmillis;
+int prev_2millis;
+float AccX;
+float AccY;
+float AccZ;
 WiFiServer server(1500);
 
 void readFile(fs::FS &fs, const char * path){
@@ -33,10 +35,10 @@ void readFile(fs::FS &fs, const char * path){
  void muestrea() {
         
         
-        AccX[k]=mpu.getAccX();
-        AccY[k]=mpu.getAccY();
-        AccZ[k]=mpu.getAccZ();
-        k=k+1;
+        AccX=mpu.getAccX();
+        AccY=mpu.getAccY();
+        AccZ=mpu.getAccZ();
+        
 }
  
 
@@ -54,90 +56,7 @@ void Tarea1 (void*parameter){
     }
   }
 }
- void Tarea2 (void*parameter){
-  const TickType_t xDelay2= 2000/ portTICK_PERIOD_MS;
  
-  while(1){
-    if (i==1){
-      File file=SD.open("/subida.txt",FILE_WRITE);
-       file.seek(EOF);
-       
-      for (j=0;j<=9;j++){
-     
-      file.print(AccX[j]);
-      file.print(", ");
-      file.print(AccY[j]);
-      file.print(", ");
-      file.print(AccZ[j]);
-      file.println(", ");
-      
-      }
-      k=0;
-      file.close();
-    
-      
-      }
-     if (i==3) {
-      File file=SD.open("/bajada.txt",FILE_WRITE);
-      //file.print(AccX[j]);
-      file.seek(EOF);
-      for (j=0;j<=9;j++){
- 
-      file.print(AccX[j]);
-      file.print(", ");
-      file.print(AccY[j]);
-      file.print(", ");
-      file.print(AccZ[j]);
-      file.println(", ");
-      
-      }
-      k=0;
-      file.close();
-       
-      }
-      if (i==5) {
-      File file=SD.open("/correr.txt",FILE_WRITE);
-      file.seek(EOF);
-      for (j=0;j<=9;j++){
- 
-      file.print(AccX[j]);
-      file.print(", ");
-      file.print(AccY[j]);
-      file.print(", ");
-      file.print(AccZ[j]);
-      file.println(", ");
-      
-      }
-      k=0;
-     file.close();
-      
-      }
-       if (i==7) {
-      File file=SD.open("/andar.txt",FILE_WRITE);
-      file.seek(EOF);
-      for (j=0;j<=9;j++){
- 
-      file.print(AccX[j]);
-      file.print(", ");
-      file.print(AccY[j]);
-      file.print(", ");
-      file.print(AccZ[j]);
-      file.println(", ");
-      
-      }
-      k=0;
-      file.close();
-       
-      }
-    
-     if ((i==2) or (i==4) or (i==6) or (i==8)){
-            
-            vTaskDelete(NULL);
-            
-            }
-    vTaskDelay(xDelay2);
-    }
-  }
 
 //void  print_acc(file) {
 //    for (j=0;j<=9;j++){
@@ -161,11 +80,11 @@ void setup() {
   // put your setup code here, to run once:
 Serial.begin(115200);
 Wire.begin();
-//if (!mpu.setup(0x68)) {  // change to your own address
-//        while (1) {
-//            Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
-//            delay(5000);
-//        }
+if (!mpu.setup(0x68)) {  // change to your own address
+        while (1) {
+            Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
+            delay(5000);
+        }
 Serial.println("Esperando conexión");
 WiFi.softAP(ssid,password);
 IPAddress IP=WiFi.softAPIP();
@@ -209,11 +128,77 @@ void loop() {
           
           Serial.print(i);
           client.print(i);
-          if ((i==1) or (i==3) or (i==5) or (i==7)){
-            xTaskCreate(Tarea2,"Tarea2",10000,NULL,2,NULL);
-            
+          if ((i==1) {
+            File file=SD.open("/correr.txt",FILE_WRITE);
+            prevmillis=millis();
+            Serial.print("recogiendo datos subida");
+             while (millis()-prevmillis<10000){
+              if (millis-prev_2millis>100){
+              muestrea  
+              file.print(AccX);
+              file.print(" ,");
+              file.print(AccY);
+              file.print(" ,");
+              file.print(AccZ);
+              file.println(" ;");
+              prev_2millis=millis();
+              }
             }
-          
+            file.close();
+          }
+          if ((i==3) {
+            File file=SD.open("/subir.txt",FILE_WRITE);
+            prevmillis=millis();
+             Serial.print("recogiendo datos bajada");
+             while (millis()-prevmillis<10000){
+              if (millis-prev_2millis>100){
+              muestrea  
+              file.print(AccX);
+              file.print(" ,");
+              file.print(AccY);
+              file.print(" ,");
+              file.print(AccZ);
+              file.println(" ;");
+              prev_2millis=millis();
+              }
+            }
+            file.close();
+          }
+          if ((i==5) {
+            File file=SD.open("/bajar.txt",FILE_WRITE);
+            prevmillis=millis();
+             while (millis()-prevmillis<10000){
+              if (millis-prev_2millis>100){
+              muestrea  
+              file.print(AccX);
+              file.print(" ,");
+              file.print(AccY);
+              file.print(" ,");
+              file.print(AccZ);
+              file.println(" ;");
+              prev_2millis=millis();
+              }
+            }
+            file.close();
+          }
+          if ((i==7) {
+            File file=SD.open("/andar.txt",FILE_WRITE);
+            prevmillis=millis();
+             while (millis()-prevmillis<10000){
+              if (millis-prev_2millis>100){
+              muestrea  
+              file.print(AccX);
+              file.print(" ,");
+              file.print(AccY);
+              file.print(" ,");
+              file.print(AccZ);
+              file.println(" ;");
+              prev_2millis=millis();
+              }
+            }
+            file.close();
+          }
+           
            if (i==9){
             readFile(SD,"/correr.txt");
             }
@@ -230,10 +215,3 @@ void loop() {
     }
 }
     
-  // put your main code here, to run repeatedly:
-
-
-
-
-
- 
