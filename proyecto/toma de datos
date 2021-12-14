@@ -120,14 +120,14 @@ void loop() {
           if (i==1) {
             File file=SD.open("/correr.txt",FILE_WRITE);
             prevmillis=millis();
-            Serial.print("recogiendo datos subida");
+            client.print("recogiendo datos correr");
              while (millis()-prevmillis<10000){
               if (mpu.update()){
        
               if (millis()-prev_2millis>100){
               muestrea();  
               file.print(AccX);
-              Serial.print(AccX);
+             
               file.print(" ,");
               file.print(AccY);
               file.print(" ,");
@@ -143,7 +143,7 @@ void loop() {
           if (i==3) {
             File file=SD.open("/subir.txt",FILE_WRITE);
             prevmillis=millis();
-             Serial.print("recogiendo datos bajada");
+             client.print("recogiendo datos subida");
              while (millis()-prevmillis<10000){
              if (mpu.update()){ 
              
@@ -165,6 +165,7 @@ void loop() {
           if (i==5) {
             File file=SD.open("/bajar.txt",FILE_WRITE);
             prevmillis=millis();
+            client.print("recogiendo datos bajada");
              while (millis()-prevmillis<10000){
               if (mpu.update()){
               if (millis()-prev_2millis>100){
@@ -186,6 +187,7 @@ void loop() {
           if (i==7) {
             File file=SD.open("/andar.txt",FILE_WRITE);
             prevmillis=millis();
+            client.print("recogiendo datos andar");
              while (millis()-prevmillis<10000){
               if (mpu.update()){
               if (millis()-prev_2millis>100){
