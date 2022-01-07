@@ -1,0 +1,94 @@
+#include <WiFi.h>
+#include "SPI.h"
+#include <MPU9250.h>
+#include "CircularBufferLib.h"
+MPU9250 mpu;
+volatile int interruptCounter;
+const char* ssid="ESP32-Access-Point" ;
+const char* password="1234";
+int i =0;
+int k=0;
+int j=0;
+float AccX;
+float AccY;
+float AccZ;
+hw_timer_t*timer=NULL;
+portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
+CircularBuffer<float> circularBufferX(50);
+CircularBuffer<float> circularBufferY(50);
+CircularBuffer<float> circularBufferZ(50);
+void IRAM_ATTR onTimer() {
+  portENTER_CRITICAL_ISR(&timerMux);
+  interruptCounter++;
+  portEXIT_CRITICAL_ISR(&timerMux);
+ 
+}
+void printArray(float* x, int length, char separator)
+{
+  for (int iCount = 0; iCount < length-1; iCount++)
+  {
+    Serial.print(x[iCount]);
+    Serial.print(separator);
+  }
+  Serial.print(x[length - 1]);
+  Serial.println();
+}
+
+void muestrea() {
+        
+       
+        AccX=mpu.getAccX();
+        AccY=mpu.getAccY();
+        AccZ=mpu.getAccZ();
+        
+}
+
+
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(115200);
+
+timer=timerBegin(0,80,true);
+timerAttachInterrupt(timer,&onTimer,true);
+timerAlarmWrite(timer,100000,true);   //cada cuantos microsegundos quieres la interrupción
+timerAlarmEnable(timer);
+Wire.begin();
+    delay(2000);
+    
+    if (!mpu.setup(0x68)) {  // change to your own address
+        while (1) {
+            Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
+            delay(5000);
+        }
+
+}
+}
+void loop() {
+    
+  
+  if (interruptCounter > 0) {
+ 
+    portENTER_CRITICAL(&timerMux);
+    interruptCounter--;
+    portEXIT_CRITICAL(&timerMux);
+    
+    
+    if (mpu.update()){
+
+            muestrea();
+        }
+      
+    circularBufferX.Add(AccX);
+    circularBufferY.Add(AccY);
+    circularBufferZ.Add(AccZ);
+    i=i+1;
+ 
+  }
+  if (i>=10){
+    printArray(circularBufferX.ToArray(), circularBufferX.Count(), ',');
+    i=0;
+    
+    
+    }
+  }
+  
