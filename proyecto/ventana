@@ -1,0 +1,44 @@
+#include "CircularBufferLib.h"
+
+int A[]={1,2,3,4,5};
+int B[]={6,7,8,9};
+int i;
+void printArray(int* x, int length, char separator)
+{
+  for (int iCount = 0; iCount < length-1; iCount++)
+  {
+    Serial.print(x[iCount]);
+    Serial.print(separator);
+  }
+  Serial.print(x[length - 1]);
+  Serial.println();
+}
+
+CircularBuffer<int> circularBuffer(10);
+
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(115200);
+Serial.print("prueba");
+for (i=0; i<= 4; i++){
+circularBuffer.Add(A[i]);
+
+
+}
+printArray(circularBuffer.ToArray(), circularBuffer.Count(), ',');
+for (i=0; i<= 3; i++){
+  circularBuffer.Add(B[i]);
+  }
+
+printArray(circularBuffer.ToArray(), circularBuffer.Count(), ',');
+
+for (i=0; i<= 3; i++){
+  circularBuffer.Add(B[i]);
+  }
+
+printArray(circularBuffer.ToArray(), circularBuffer.Count(), ',');
+}
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
