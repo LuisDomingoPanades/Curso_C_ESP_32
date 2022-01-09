@@ -3,34 +3,40 @@
 #include "SPIFFS.h"
 #include "time.h"
 
-const char* ssid = "MOVISTAR_10C4";                  // Nombre de mi wifi
-const char* password = "32472A6EC6114FF1D71C";           // Contraseña 
+const char* ssid = "MOVISTAR_10C4";                 
+const char* password = "*******";          
 
 
 const char* ntpServer = "pool.ntp.org";      // Servidor horario
-const long  gmtOffset_sec = 3600;            // Compensar UTC para mi zona horaria en ms
+const long  gmtOffset_sec = 3600;            // Compensar  para  zona horaria 
 const int   daylightOffset_sec = 3600;       // Compensar la luz del día 
 
 boolean pulsador = false;
+boolean pulsador2=false;
 tm timeinfo;
 
-String Hora;                                 // Variable para almacenar la hora completa
-String horas;                                // Varible para almacenar solo las horas
-String minutos;                              // Variable para almacenar solo los minutos
-String segundos;
+String Hora;                                 
+String horas;                                
+String minutos;                              
+
 
 AsyncWebServer server(80);                   // Create AsyncWebServer object on port 80
 
 String processor(const String& var){
   Serial.println(var); 
   Hora = get_hora(); 
-  if(var == "STATE"){
+  if(var == "STATE"){             
     
-//    if(pulsador == true){                    
-//     Hora = "00:00";    
-//    }
-  Hora=get_hora();
+    if(pulsador == true){                 //si el pulsador de reset es 1 poner la hora en 00:00   
+     Hora = "00:00";   
+     pulsador=false; 
+    }
+    if (pulsador2==true){                // si el pulsador de actualizar es 1 actualizar la hora
+     Hora=get_hora();
+     pulsador2=false;
+    }
     return Hora;
+    
   }
   return String();
 }
@@ -67,9 +73,13 @@ void setup(){
     request->send(SPIFFS, "/style.css", "text/css");
   });
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-  // Route to set GPIO to HIGH
-  server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
+  
+  server.on("/Reset", HTTP_GET, [](AsyncWebServerRequest *request){     //si recibe request de reset poner el pulsador como TRUE
     pulsador = true;    
+    request->send(SPIFFS, "/index.html", String(), false, processor);   //llama a la función de processor
+  });
+  server.on("/Actualizar", HTTP_GET, [](AsyncWebServerRequest *request){   //si recibe request de actualizar poner el pulsador2 como TRUE
+    pulsador2 = true;    
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
   
