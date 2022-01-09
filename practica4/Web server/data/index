@@ -9,6 +9,7 @@
 <body>
   <h1>SERVIDOR WEB ESP32</h1>
   <p>HORA: <strong> %STATE%</strong></p>
-  <p><a href="/on"><button class="button">Actualizar</button></a></p>
+  <p><a href="/Reset"><button class="button">Reset</button></a></p>
+  <p><a href="/Actualizar"><button class="button">Actualizar</button></a></p>
 </body>
 </html>
