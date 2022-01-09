@@ -2,12 +2,13 @@
 #include "time.h"
 
 
-const char* ssid       = "RSense";
-const char* password   = "";
+const char* ssid       = "MOVISTAR_10C4";
+const char* password   = "******";
 uint16_t serverPort= 8000;
-const char* serverIP="192.168.0.140";
+const char* serverIP="192.168.1.176";
 WiFiClient client;
-
+String line;
+String line2;
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;
 const int   daylightOffset_sec = 3600;
@@ -27,8 +28,8 @@ void setup()
   Serial.begin(115200);
   
   //connect to WiFi
-  Serial.printf("Connecting to %s ", ssid);
-  WiFi.begin(ssid);
+  Serial.printf("Connecting to %s ", ssid);  
+  WiFi.begin(ssid,password);         //se conecta al WIFI
   while (WiFi.status() != WL_CONNECTED) {
       delay(500);
       Serial.print(".");
@@ -36,12 +37,10 @@ void setup()
   Serial.println(" CONNECTED");
   
   //init and get the time
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer); //Obtiene del ntp server la hora con el ajuste de zona horaria y de luz
   printLocalTime();
 
-  //disconnect WiFi as it's no longer needed
-  //WiFi.disconnect(true);
-  //WiFi.mode(WIFI_OFF);
+ 
 }
 
 void loop()
@@ -56,15 +55,23 @@ void loop()
         {
             if (client.available()) // Si hay datos para leer
             {
-                String line = client.readStringUntil('\n');
+                char a= client.read(); //lee los datos del servidor
+                line.concat(a); //crea un string
                 if (line=="start")
                 {
+                  
                   while(1)
                   {
                     printLocalTime();
+                    line2=""; //borra el string por si la orden se ha escrito mal
                     delay(1000);
-                    String line = client.readStringUntil('\n');
-                    if (line=="stop");
+                   while (client.available()){ //mientras tenga datos para leer lee y los acumula en un string
+                  char b= client.read();      
+                  line2.concat(b);
+                  }
+                  
+                  Serial.print(line2);  
+                    if (line2=="stop")  //para si recibe un stop del server
                     {  
                       break;
                     }  
