@@ -16,7 +16,7 @@ char ftp_user[]   = "rsense";
 char ftp_pass[]   = "rsense";          
 
 // you can pass a FTP timeout and debbug mode on the last 2 arguments
-ESP32_FTPClient ftp (ftp_server,ftp_user,ftp_pass, 5000, 2);
+ESP32_FTPClient ftp (ftp_server,ftp_user,ftp_pass, 5000, 2); // servidor con el usuario y contraseña timeout
 
 #include <ArduinoJson.h>
 double valueTemp=0;
@@ -40,15 +40,15 @@ void setup()
   
   doc["n"] = "temp";
   doc["u"] = "cel";
-  JsonArray data = doc.createNestedArray( "v");   
+  JsonArray data = doc.createNestedArray( "v");   //crea un array 
   for(int i=0;i<10;i++){
     valueTemp=random(0,40);    
     data.add(valueTemp); 
     delay(500);
   }
-  serializeJsonPretty(doc, documento);
-  ftp.OpenConnection();
-  // Create the file new and write a string into it
+  serializeJsonPretty(doc, documento); //escribe un documento json con espacios y line-breaks
+  ftp.OpenConnection(); //se conecta con el servidor
+  
   ftp.ChangeWorkDir("/rsense/736206");   // directorio a guardar
   ftp.InitFile("Type A");
   ftp.NewFile("temperatura.json");          // crear archivo json
