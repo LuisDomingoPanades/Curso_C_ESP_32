@@ -4,6 +4,8 @@
 #include "CircularBufferLib.h"
 #include "ESPAsyncWebServer.h"
 
+
+
 MPU9250 mpu;
 volatile int interruptCounter;
 const char* ssid="Mi 9T" ;
@@ -144,6 +146,7 @@ Wire.begin();
  
 
   // Connect to Wi-Fi
+ 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -196,8 +199,8 @@ void loop() {
   if (i>40){
     ArrayY=circularBufferY.ToArray();
     
-    a=0;
-    b=0;
+    a=ArrayY[1];
+    b=ArrayY[1];
     j=0;
     MediaY=0;
     
@@ -212,19 +215,58 @@ void loop() {
       
       }
       
-    else if   (ArrayY[1]<b)
+    else if   (ArrayY[j]<b)
     {
-      b=ArrayY[1];
+      b=ArrayY[j];
       }
       j=j+1;
     }
     i=0;
-    if ((a>0.5) and (a<1.5)||(b<-0.5)and (b>-1.75)){
+    if((a-b)<0.3){
+      (Estado="reposo");  
+      }
+    else if ((a>0.5) and (a<1.6)){
       Estado="andando"; }
-    else if ((a>2.5)||(b<-2.5)){
+    else if ((b<-3.5)){
       Estado="corriendo"; 
-      }else if ((a>1.5)and (a<2.5)){
+      }else if ((a>1.6)){
       Estado="subiendo";
-      }else if((a<0.35)and (b>-0.35)){
-    (Estado="reposo");  
-    }
+      }
+
+    
+     
+      
+      
+  
+  }
+      }
+//    
+//  if (i>40){
+//    ArrayY=circularBufferY.ToArray();
+//    a=0;
+//    b=0;
+//    for (j=0;79;j++){
+//    if (ArrayY[j]>a)
+//    {
+//      
+//      a=ArrayY[j];
+//      Serial.println(a);
+//      
+//      }
+//      
+//    else if   (ArrayY[j]<b)
+//    {
+//      b=ArrayY[j];
+//      }
+//    }
+//    if ((a>0.25) and (a<2)||(b<-0.25)and (b>-1.75)){
+//      estado="andando"; }
+//    if (a>2.5||b<-2){
+//      estado="corriendo"; }
+//    client.print(estado);
+//    
+//    i=0;
+//    }
+//    
+//    
+  
