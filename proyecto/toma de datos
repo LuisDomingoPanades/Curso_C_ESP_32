@@ -111,7 +111,7 @@ void loop() {
       while(client.connected()){
         if (client.available()){
           
-          String c=client.readStringUntil('\n');
+          String c=client.readStringUntil('\n'); //lee hasta que haya un final de linea, en el momento que le llegue un final de linea se ejecuta el codigo de abajo
           i=i+1;
           
           
@@ -119,7 +119,7 @@ void loop() {
           client.println(i);
           client.println("Esperando a recoger datos");
           if (i==1) {
-            File file=SD.open("/correr.txt",FILE_WRITE);
+            File file=SD.open("/correr.txt",FILE_WRITE); //Crea un archivo llamado correr en modo escribir 
             prevmillis=millis();
             client.print("recogiendo datos correr");
              while (millis()-prevmillis<30000){
@@ -127,7 +127,7 @@ void loop() {
        
               if (millis()-prev_2millis>20){
               muestrea();  
-              file.print(AccX);
+              file.print(AccX);           // recoge los datos del sensor y los escribe en el archivo
               
               file.print(" ,");
               file.print(AccY);
@@ -142,7 +142,7 @@ void loop() {
             client.print("Datos recogidos");
           }
           if (i==3) {
-            File file=SD.open("/subir.txt",FILE_WRITE);
+            File file=SD.open("/subir.txt",FILE_WRITE);         //repite el proceso anterior pero esta vez en un archivo llamado subir
             prevmillis=millis();
              client.print("recogiendo datos subida");
              while (millis()-prevmillis<30000){
