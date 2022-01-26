@@ -11,6 +11,7 @@ volatile int interruptCounter;
 const char* ssid="Mi 9T" ;
 const char* password="df82a2ce66ab";
 AsyncWebServer server(80);
+
 int i =0;
 int k=0;
 int j=0;
@@ -196,7 +197,7 @@ void loop() {
   
    
   }
-  if (i>40){
+  if (i>20){
     ArrayY=circularBufferY.ToArray();
     
     a=ArrayY[1];
@@ -205,7 +206,10 @@ void loop() {
     MediaY=0;
     
     while(j<80){
+      if (ArrayY[j]>0){
       MediaY=ArrayY[j]/80+MediaY;
+      }
+      
     if (ArrayY[j]>a)
     {
       
@@ -224,14 +228,21 @@ void loop() {
     i=0;
     if((a-b)<0.3){
       (Estado="reposo");  
+//     Estado=String(a)+":"+String(b)+":"+String(MediaY);
+      }
+      else if ((b<-4)){
+      Estado="corriendo"; 
+//      Estado=String(a)+":"+String(b)+":"+String(MediaY);
+      }
+      else if ((MediaY>0.30)){
+      Estado="subiendo";
+//      Estado=String(a)+":"+String(b)+":"+String(MediaY);
       }
     else if ((a>0.5) and (a<1.6)){
-      Estado="andando"; }
-    else if ((b<-3.5)){
-      Estado="corriendo"; 
-      }else if ((a>1.6)){
-      Estado="subiendo";
-      }
+      Estado="andando";
+//      Estado=String(a)+":"+String(b)+":"+String(MediaY);
+}
+    
 
     
      
