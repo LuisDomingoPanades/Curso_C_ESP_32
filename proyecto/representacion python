@@ -31,11 +31,11 @@ devzc=[]
 j=0
 x=([],[])
 x1=[]
-fig, (Accs,Ms,Ds)= plt.subplots(3,sharex=True,figsize=(10,10))
+fig, (Accs,Ms,Ds)= plt.subplots(3,sharex=True,figsize=(10,10))      //crea las figuras formadas por las subplots Accs,Ms y Ds
 fig1, (Accc,Mc,Dc)= plt.subplots(3,sharex=True,figsize=(10,10))
 
 
-Accs.yaxis.set_major_locator(plt.MultipleLocator(0.3))
+Accs.yaxis.set_major_locator(plt.MultipleLocator(0.3))              //se configura la escala y leyenda de las tablas
 Accs.yaxis.set_minor_locator(plt.MultipleLocator(0.1))
 Ms.yaxis.set_major_locator(plt.MultipleLocator(0.3))
 Ms.yaxis.set_minor_locator(plt.MultipleLocator(0.1))
@@ -52,15 +52,15 @@ Dc.yaxis.set_minor_locator(plt.MultipleLocator(0.05))
 
 
 
-with open('subir.txt', 'r') as file:
+with open('subir.txt', 'r') as file:                    //abre el archivo subir y empieza a leer 
     reader = csv.reader(file)
     for row in reader:
-        new_row=[s.strip(';') for s in row]
-        Aceleraciones=np.array(new_row)
+        new_row=[s.strip(';') for s in row]                 
+        Aceleraciones=np.array(new_row)                    //Asigna a aceleraciones el valor de la fila 
         
         
         
-        AccX[j].append(float(Aceleraciones[0]))
+        AccX[j].append(float(Aceleraciones[0]))             //Adjunta el valor de Aceleraciones a el array AccX
         AccY[j].append(float(Aceleraciones[1]))
         AccZ[j].append(float(Aceleraciones[2]))
         
@@ -117,10 +117,10 @@ with open('correr.txt', 'r') as file:
         
         
         
-Accs.plot(x[0],AccX[0])
-Accs.plot(x[0],AccY[0])
-Accs.plot(x[0],AccZ[0])
-Accs.set_title("Aceleraciones subida")
+Accs.plot(x[0],AccX[0])                             //representa los datos de aceleración del eje X del archivo subir
+Accs.plot(x[0],AccY[0])                             //representa los datos de aceleración del eje Y del archivo subir
+Accs.plot(x[0],AccZ[0])                             //representa los datos de aceleración del eje Z del archivo subir
+Accs.set_title("Aceleraciones subida")              //Le da título a la subplot de aceleraciones
 
 Ms.plot(x[0],meanx[0])
 Ms.plot(x[0],meany[0])
@@ -149,7 +149,7 @@ Dc.plot(x[1],devy[1])
 Dc.plot(x[1],devz[1])
 Dc.set_title("Desviación corriendo")        
         
-plt.show()        
+plt.show()                                  //muestra las figuras creadas
         
         
         
